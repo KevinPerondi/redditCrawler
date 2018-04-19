@@ -1,5 +1,6 @@
 package com.mycompany.crawler;
 
+import java.util.Locale;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.NetworkAdapter;
 import net.dean.jraw.http.OkHttpNetworkAdapter;
@@ -66,7 +67,7 @@ public class Client {
     
     public void createUserAgent(){
         //falta pegar os valores corretos para criar o agente
-        this.setUserAgent(new UserAgent("bot", "appID", "version", "redditUserName"));
+        this.setUserAgent(new UserAgent("bot", "com.mycompany.crawler", "DEV", "renanvh"));
     }
     
     public void createCredential(){
@@ -74,13 +75,16 @@ public class Client {
     }
     
     public void procedure(){
+        this.createCredential();
+        this.createUserAgent();
         this.setAdapter(new OkHttpNetworkAdapter(this.getUserAgent()));
         this.setRedditClient(OAuthHelper.automatic(this.getAdapter(), this.getCredential()));
+        this.collectingPosts();
     }
     
-    public void aaa(){
-        //acho que esse trem doido pega as informacoes desse topico
-        Subreddit sr = this.getRedditClient().subreddit("hhs").about();
+    public void collectingPosts(){        
+        Subreddit sr = this.getRedditClient().subreddit("java").about();
+        System.out.println(sr.getSubscribers());
     }
     
 }
