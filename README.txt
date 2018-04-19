@@ -2,7 +2,7 @@ Simple Java Reddit Crawler
 
 https://mattbdean.gitbooks.io/jraw/
 
-clientID: AHj-bp01KM6ECQ
+clientID: 0bSpsRjc5_FHvA
 
-ClientSecret: 6H6PTLJdbi4gYdRdMNxsa1TywF4
+ClientSecret: YA9KPWjGtzxZDIfhdCxjvdHsctQ
 
