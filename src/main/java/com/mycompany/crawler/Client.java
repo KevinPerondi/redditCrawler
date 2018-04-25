@@ -1,13 +1,19 @@
 package com.mycompany.crawler;
 
-import java.util.Locale;
+import java.util.List;
 import net.dean.jraw.RedditClient;
+import net.dean.jraw.http.HttpRequest;
 import net.dean.jraw.http.NetworkAdapter;
 import net.dean.jraw.http.OkHttpNetworkAdapter;
 import net.dean.jraw.http.UserAgent;
+import net.dean.jraw.models.Listing;
+import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.models.SubredditSort;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.oauth.Credentials;
 import net.dean.jraw.oauth.OAuthHelper;
+import net.dean.jraw.pagination.DefaultPaginator;
 
     //https://github.com/BloodShura/RedditCrawlerSimple
 
@@ -82,9 +88,19 @@ public class Client {
         this.collectingPosts();
     }
     
-    public void collectingPosts(){        
-        Subreddit sr = this.getRedditClient().subreddit("java").about();
-        System.out.println(sr.getSubscribers());
+    public void collectingPosts(){   
+        DefaultPaginator.Builder<Submission, SubredditSort> paginator = this.getRedditClient().subreddit("java").posts().sorting(SubredditSort.TOP).timePeriod(TimePeriod.ALL);
+        for (Listing<Submission> s : paginator.build()){
+            List<Submission> subList = s.getChildren();
+            for (Submission sub : subList){
+                //cada sub é um post do reddit
+                System.out.println(sub.getAuthor());
+            }
+        }
+        
+        //Listing<Submission> topsJava = paginator.next();
+        //Subreddit sr = this.getRedditClient().subreddit("java").posts().sorting(SubredditSort.TOP).timePeriod(TimePeriod.ALL);
+        //System.out.println(sr.getSubscribers());
     }
     
 }
