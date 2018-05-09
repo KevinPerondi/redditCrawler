@@ -1,4 +1,4 @@
-package com.mycompany.filter;
+package com.mycompany.graph;
 
 public class Edge {
     private Vertex v1;
