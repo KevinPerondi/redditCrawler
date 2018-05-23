@@ -51,9 +51,7 @@ public class Graph {
             if (e.getV1().getAuthor().equals(firstAuthorName) && e.getV2().getAuthor().equals(secondAuthorName)) {
                 return true;
             } else if (e.getV1().getAuthor().equals(secondAuthorName) && e.getV2().getAuthor().equals(firstAuthorName)) {
-                {
-                    return true;
-                }
+                return true;
             }
         }
         return false;
