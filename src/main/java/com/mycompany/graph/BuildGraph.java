@@ -9,62 +9,68 @@ import java.util.Scanner;
 public class BuildGraph {
 
     public static void main(String[] args) throws FileNotFoundException {
-        String pathPostFile = "/home/todos/alunos/cm/a1552287/Downloads/dados/Reddit-Output/golang-posts.csv";
-        String pathCommentsFile = "/home/todos/alunos/cm/a1552287/Downloads/dados/Reddit-Output/golang-comments.csv";
 
-        
-        
-        Scanner scan = new Scanner(new File(pathPostFile));
-        //args[0] posts csv
-        //Scanner scan = new Scanner(new File(args[0]));
+        String filePath = "/home/suporte/Downloads/Reddit-Output-all/";
+        String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
+
+        Scanner postScan;
+        Scanner commentScan;
+
         boolean skipFirstLine = true;
 
-        List<Post> posts = new ArrayList<>();
-        List<Comment> comments = new ArrayList<>();
-        
-        Graph graph = new Graph();
-        
-        String line = new String();
-        while (scan.hasNextLine()) {
-            if (skipFirstLine) {
-                skipFirstLine = false;
-            } else {
-                //post atributos
-                //0-Id	1-Author 2-Date	3-IsArchived 4-IsLocked 5-IsNsfw 6-IsSelfPost 7-SelfText
-                line = scan.nextLine();
-                System.out.println(line);
-                String[] lineSplit = line.split(",");
-                Post novoPost = new Post(lineSplit[1], lineSplit[0]);
-                posts.add(novoPost);
-            }
-        }
+        for (String communityName : communityNames) {
 
-        scan = new Scanner(new File(pathCommentsFile));
-        //args[1] comments csv
-        //Scanner scan = new Scanner(new File(args[1]));
-        skipFirstLine = true;
-        
-        while (scan.hasNextLine()) {
-            if (skipFirstLine) {
-                skipFirstLine = false;
-            } else {
-                //comments atributos
-                //0-Id 1-PostId	2-Author 3-Date	4-IsArchived 5-IsControversial 6-Score 7-Content
-                line = scan.nextLine();
-                System.out.println(line);
-                String[] lineSplit = line.split(",");
-                Comment novoComment = new Comment(lineSplit[2], lineSplit[0], lineSplit[1]);
-                comments.add(novoComment);
-            }
-        }
-        
-        for (Post p : posts){
-            for (Comment c : comments){
-                if (p.getId().equals(c.getPostID())){
-                    
+            String pathPost = filePath + communityName + "-posts.csv";
+            String pathComment = filePath + communityName + "-comments.csv";
+            postScan = new Scanner(new File(pathPost));
+            commentScan = new Scanner(new File(pathComment));
+
+            List<Post> posts = new ArrayList<>();
+            List<Comment> comments = new ArrayList<>();
+
+            String line = new String();
+
+            while (postScan.hasNextLine()) {
+                if (skipFirstLine) {
+                    skipFirstLine = false;
+                } else {
+                    //post atributos
+                    //0-Id 1-Author 2-Date 3-IsArchived 4-IsLocked 5-IsNsfw 6-IsSelfPost 7-SelfText
+                    line = postScan.nextLine();
+                    String[] lineSplit = line.split(",");
+                    Post novoPost = new Post(lineSplit[1], lineSplit[0]);
+                    posts.add(novoPost);
                 }
             }
+
+            skipFirstLine = true;
+
+            while (commentScan.hasNextLine()) {
+                if (skipFirstLine) {
+                    skipFirstLine = false;
+                } else {
+                    //comments atributos
+                    //0-Id 1-PostId 2-ParentId 3-IsAnswer 4-Author 5-Date 6-IsArchived 7-IsControversial 8-Score 9-Content
+                    line = commentScan.nextLine();
+                    String[] lineSplit = line.split(",");
+
+                    boolean status;
+
+                    if (lineSplit[3].equals("true")) {
+                        status = true;
+                    }else {
+                    status = false;
+                    }
+
+                    Comment novoComment = new Comment(lineSplit[2], lineSplit[0], lineSplit[1], lineSplit[2], status);
+                    comments.add(novoComment);
+                }
+            }
+            skipFirstLine = true;
+
+            Graph graph = new Graph(posts,comments);
+            //proximo passo: para cada post, pegar os comentarios e gerar as arestas...(dentro da classe Graph)
         }
-        
+
     }
 }
