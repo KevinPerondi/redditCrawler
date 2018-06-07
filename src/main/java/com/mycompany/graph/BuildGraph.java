@@ -20,7 +20,7 @@ public class BuildGraph {
 
         boolean skipFirstLine = true;
 
-                for (String communityName : communityNames) {
+        for (String communityName : communityNames) {
 
             String pathPost = filePath + communityName + "-posts.csv";
             String pathComment = filePath + communityName + "-comments.csv";
@@ -54,8 +54,8 @@ public class BuildGraph {
                     //0-Id 1-PostId 2-ParentId 3-IsAnswer 4-Author 5-Date 6-IsArchived 7-IsControversial 8-Score 9-Content
                     line = commentScan.nextLine();
                     String[] lineSplit = line.trim().split(",");
-                    
-                    if (lineSplit.length >= 10){  
+
+                    if (lineSplit.length >= 10) {
                         boolean status;
 
                         if (lineSplit[3].equals("true")) {
@@ -67,15 +67,16 @@ public class BuildGraph {
                         Comment novoComment = new Comment(lineSplit[4], lineSplit[0], lineSplit[1], lineSplit[2], status);
                         comments.add(novoComment);
                     }
-                    
+
                 }
             }
             skipFirstLine = true;
-            
-            System.out.println("Creating Graph for {"+communityName+"}");
-            Graph graph = new Graph(posts, comments);                        
+
+            System.out.println("Creating Graph for {" + communityName + "}");
+            Graph graph = new Graph(posts, comments, communityName);
             graph.creatingEdges();
-            graph.printEdges();
+            //graph.printEdges();
+            graph.graphToCSV();
         }
 
     }

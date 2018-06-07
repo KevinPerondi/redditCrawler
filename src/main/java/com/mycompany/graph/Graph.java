@@ -1,5 +1,8 @@
 package com.mycompany.graph;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +12,17 @@ public class Graph {
     private List<Edge> edges;
     private final List<Post> posts;
     private final List<Comment> comments;
+    private final String communityName;
 
-    public Graph(List<Post> posts, List<Comment> comments) {
+    public Graph(List<Post> posts, List<Comment> comments, String communityName) {
         this.edges = new ArrayList<>();
         this.posts = posts;
         this.comments = comments;
+        this.communityName = communityName;
+    }
+
+    public String getCommunityName() {
+        return communityName;
     }
 
     public List<Post> getPosts() {
@@ -84,7 +93,7 @@ public class Graph {
             if (!cmts.isEmpty()) {
                 for (Comment c : cmts) {
                     if (!c.isIsAnswer()) {
-                        this.addEdge(p.getAuthor(), c.getAuthor());
+                        this.addEdge(c.getAuthor(), p.getAuthor());
                     } else {
                         String targetName = this.getAuthorNameByParentID(cmts, c.getParentID());
                         if (!targetName.isEmpty()) {
@@ -97,10 +106,25 @@ public class Graph {
         }
     }
 
-    public void printEdges(){
-        for (Edge e : this.getEdges()){
-            System.out.println(e.getSource()+"->"+e.getTarget()+"{"+e.getWeight()+"}");
+    public void printEdges() {
+        for (Edge e : this.getEdges()) {
+            System.out.println(e.getSource() + "->" + e.getTarget() + "{" + e.getWeight() + "}");
         }
     }
-    
+
+    public void graphToCSV() throws FileNotFoundException {
+        
+        System.out.println("starting "+this.getCommunityName()+" to csv");
+        
+        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/"+this.getCommunityName()+"-graph.csv"));
+        
+        StringBuilder sb = new StringBuilder();
+        
+        for (Edge e : this.getEdges()){
+            sb.append(e.getSource()+";"+e.getTarget()+";"+e.getWeight()+"\n");
+        }        
+        pw.write(sb.toString());
+        pw.close();
+    }
+
 }
