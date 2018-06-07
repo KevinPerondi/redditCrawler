@@ -10,15 +10,17 @@ public class BuildGraph {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        String filePath = "/home/suporte/Downloads/Reddit-Output-all/";
-        String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
+        //String filePath = "/home/suporte/Downloads/Reddit-Output-all/";
+        String filePath = "/home/todos/alunos/cm/a1552287/Downloads/Reddit-Output-all/";
+        //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
+        String[] communityNames = {"csharp"};
 
         Scanner postScan;
         Scanner commentScan;
 
         boolean skipFirstLine = true;
 
-        for (String communityName : communityNames) {
+                for (String communityName : communityNames) {
 
             String pathPost = filePath + communityName + "-posts.csv";
             String pathComment = filePath + communityName + "-comments.csv";
@@ -44,7 +46,6 @@ public class BuildGraph {
             }
 
             skipFirstLine = true;
-
             while (commentScan.hasNextLine()) {
                 if (skipFirstLine) {
                     skipFirstLine = false;
@@ -52,24 +53,29 @@ public class BuildGraph {
                     //comments atributos
                     //0-Id 1-PostId 2-ParentId 3-IsAnswer 4-Author 5-Date 6-IsArchived 7-IsControversial 8-Score 9-Content
                     line = commentScan.nextLine();
-                    String[] lineSplit = line.split(",");
+                    String[] lineSplit = line.trim().split(",");
+                    
+                    if (lineSplit.length >= 10){  
+                        boolean status;
 
-                    boolean status;
+                        if (lineSplit[3].equals("true")) {
+                            status = true;
+                        } else {
+                            status = false;
+                        }
 
-                    if (lineSplit[3].equals("true")) {
-                        status = true;
-                    }else {
-                    status = false;
+                        Comment novoComment = new Comment(lineSplit[4], lineSplit[0], lineSplit[1], lineSplit[2], status);
+                        comments.add(novoComment);
                     }
-
-                    Comment novoComment = new Comment(lineSplit[2], lineSplit[0], lineSplit[1], lineSplit[2], status);
-                    comments.add(novoComment);
+                    
                 }
             }
             skipFirstLine = true;
-
-            Graph graph = new Graph(posts,comments);
-            //proximo passo: para cada post, pegar os comentarios e gerar as arestas...(dentro da classe Graph)
+            
+            System.out.println("Creating Graph for {"+communityName+"}");
+            Graph graph = new Graph(posts, comments);                        
+            graph.creatingEdges();
+            graph.printEdges();
         }
 
     }

@@ -45,7 +45,62 @@ public class Graph {
         if (!this.containsEdge(source, target)) {
             Edge e = new Edge(source, target);
             this.edges.add(e);
+        } else {
+            this.increseEdgeWeight(source, target);
         }
     }
 
+    public void increseEdgeWeight(String source, String target) {
+        for (Edge e : this.getEdges()) {
+            if (e.getSource().equals(source) && e.getTarget().equals(target)) {
+                e.incresesWeight();
+            }
+        }
+    }
+
+    public List<Comment> getCommentsByPostID(String pID) {
+        List<Comment> commts = new ArrayList<>();
+        for (Comment c : this.getComments()) {
+            if (c.getPostID().equals(pID)) {
+                commts.add(c);
+            }
+        }
+        return commts;
+    }
+
+    public String getAuthorNameByParentID(List<Comment> cmts, String parentID) {
+        for (Comment c : cmts) {
+            if (c.getCommentID().equals(parentID)) {
+                return c.getAuthor();
+            }
+        }
+        return null;
+    }
+
+    public void creatingEdges() {
+        for (Post p : this.getPosts()) {
+            List<Comment> cmts = this.getCommentsByPostID(p.getId());
+
+            if (!cmts.isEmpty()) {
+                for (Comment c : cmts) {
+                    if (!c.isIsAnswer()) {
+                        this.addEdge(p.getAuthor(), c.getAuthor());
+                    } else {
+                        String targetName = this.getAuthorNameByParentID(cmts, c.getParentID());
+                        if (!targetName.isEmpty()) {
+                            this.addEdge(c.getAuthor(), targetName);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    public void printEdges(){
+        for (Edge e : this.getEdges()){
+            System.out.println(e.getSource()+"->"+e.getTarget()+"{"+e.getWeight()+"}");
+        }
+    }
+    
 }
