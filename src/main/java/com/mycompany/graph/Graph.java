@@ -113,16 +113,19 @@ public class Graph {
     }
 
     public void graphToCSV() throws FileNotFoundException {
-        
-        System.out.println("starting "+this.getCommunityName()+" to csv");
-        
-        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/"+this.getCommunityName()+"-graph.csv"));
-        
+
+        System.out.println("starting " + this.getCommunityName() + " to csv");
+
+        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + this.getCommunityName() + "-graph.csv"));
+
         StringBuilder sb = new StringBuilder();
-        
-        for (Edge e : this.getEdges()){
-            sb.append(e.getSource()+";"+e.getTarget()+";"+e.getWeight()+"\n");
-        }        
+
+        for (Edge e : this.getEdges()) {
+            //com peso
+            //sb.append(e.getSource()+";"+e.getTarget()+";"+e.getWeight()+"\n");
+            //sem peso
+            sb.append(e.getSource()+";"+e.getTarget()+"\n");
+        }
         pw.write(sb.toString());
         pw.close();
     }
