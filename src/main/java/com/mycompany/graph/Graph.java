@@ -3,7 +3,13 @@ package com.mycompany.graph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class Graph {
@@ -51,20 +57,8 @@ public class Graph {
     }
 
     public void addEdge(String source, String target) {
-        if (!this.containsEdge(source, target)) {
-            Edge e = new Edge(source, target);
-            this.edges.add(e);
-        } else {
-            this.increseEdgeWeight(source, target);
-        }
-    }
-
-    public void increseEdgeWeight(String source, String target) {
-        for (Edge e : this.getEdges()) {
-            if (e.getSource().equals(source) && e.getTarget().equals(target)) {
-                e.incresesWeight();
-            }
-        }
+        Edge e = new Edge(source, target);
+        this.edges.add(e);
     }
 
     public List<Comment> getCommentsByPostID(String pID) {
@@ -83,7 +77,43 @@ public class Graph {
                 return c.getAuthor();
             }
         }
-        return null;
+        return "";
+    }
+
+    public void revertPostsList() {
+        Collections.reverse(this.getPosts());
+    }
+
+    public List<Post> getPostsByDate(Date d) {
+        List<Post> postsDay = new ArrayList<>();
+        for (Post p : this.getPosts()) {
+            if (p.getPostData().equals(d)) {
+                postsDay.add(p);
+            }
+        }
+        return postsDay;
+    }
+
+    public List<Post> concatLists(List<Post> l1, List<Post> l2) {
+        if (!l2.isEmpty()) {
+            for (Post p : l2) {
+                l1.add(p);
+            }
+        }
+        return l1;
+    }
+
+    public void timeLineMovingWindow() {
+        int iterator = 0;
+        Post head = this.getPosts().remove(iterator);
+        Date postDate = head.getPostData();
+        List<Post> postsTotal = new ArrayList<>();
+        postsTotal.add(head);
+        for (int i = 0; i < 30; i++) {
+            List<Post> p = getPostsByDate(postDate);
+            postDate = increseDate(postDate);
+        }
+
     }
 
     public void creatingEdges() {
@@ -101,6 +131,8 @@ public class Graph {
                         }
                     }
                 }
+            } else {
+                this.addEdge(p.getAuthor(), "");
             }
 
         }
@@ -108,7 +140,7 @@ public class Graph {
 
     public void printEdges() {
         for (Edge e : this.getEdges()) {
-            System.out.println(e.getSource() + "->" + e.getTarget() + "{" + e.getWeight() + "}");
+            System.out.println(e.getSource() + "->" + e.getTarget());
         }
     }
 
@@ -116,18 +148,25 @@ public class Graph {
 
         System.out.println("starting " + this.getCommunityName() + " to csv");
 
-        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + this.getCommunityName() + "-graph.csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + this.getCommunityName() + "-graph.csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "-graph.csv"));
 
         StringBuilder sb = new StringBuilder();
 
         for (Edge e : this.getEdges()) {
-            //com peso
-            //sb.append(e.getSource()+";"+e.getTarget()+";"+e.getWeight()+"\n");
-            //sem peso
-            sb.append(e.getSource()+";"+e.getTarget()+"\n");
+            if (e.getTarget().equals("")) {
+                sb.append(e.getSource() + "\n");
+            } else {
+                sb.append(e.getSource() + ";" + e.getTarget() + "\n");
+            }
         }
         pw.write(sb.toString());
         pw.close();
+    }
+
+    private Date increseDate(Date postDate) throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        return df.parse(LocalDate.parse(postDate.toString()).plusDays(1).toString());
     }
 
 }
