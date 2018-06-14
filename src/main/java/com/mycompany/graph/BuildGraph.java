@@ -3,6 +3,7 @@ package com.mycompany.graph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,10 +12,10 @@ import java.util.Scanner;
 
 public class BuildGraph {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, ParseException {
 
-        String filePath = "/home/suporte/Downloads/Reddit-Output-all/";
-        //String filePath = "/home/todos/alunos/cm/a1552287/Downloads/Reddit-Output-all/";
+        //String filePath = "/home/suporte/Downloads/Reddit-Output-all/";
+        String filePath = "/home/todos/alunos/cm/a1552287/Downloads/Reddit-Output-all/";
         //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
         String[] communityNames = {"csharp"};
 
@@ -94,12 +95,14 @@ public class BuildGraph {
                 }
             }
             skipFirstLine = true;
-
+            System.out.println(posts.get(0).getPostData());
             System.out.println("Creating Graph for {" + communityName + "}");
             Graph graph = new Graph(posts, comments, communityName);
+            graph.get30days();
             graph.creatingEdges();
+            
             //graph.printEdges();
-            graph.graphToCSV();
+            graph.graphToCSV("csharp-30days");
         }
 
     }

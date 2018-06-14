@@ -24,9 +24,18 @@ public class teste_class {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date d = df.parse(date);
 
-        System.out.println(d.getDate() + "-" + d.getMonth() + "-" + (d.getYear() + 1900));
+        System.out.println(d);
 
-        d = df.parse(LocalDate.parse(date).plusDays(1).toString());
-        System.out.println(d.getDate() + "-" + d.getMonth() + "-" + (d.getYear() + 1900));
+        Date beet = df.parse("2018-03-23");
+        
+        Date d2 = df.parse(LocalDate.parse(date).plusDays(30).toString());
+        System.out.println(d2);
+        
+        
+        System.out.println(beet);
+        
+        if (beet.after(d) && beet.before(d2)){
+            System.out.println("tamemu?");
+        }
     }
 }

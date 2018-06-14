@@ -19,12 +19,17 @@ public class Graph {
     private final List<Post> posts;
     private final List<Comment> comments;
     private final String communityName;
+    private List<Post> postsTotal;
+    private List<Comment> commentsTotal;
 
     public Graph(List<Post> posts, List<Comment> comments, String communityName) {
         this.edges = new ArrayList<>();
         this.posts = posts;
         this.comments = comments;
         this.communityName = communityName;
+        this.postsTotal = new ArrayList<>();
+        this.commentsTotal = new ArrayList<>();
+        this.revertPostsList();
     }
 
     public String getCommunityName() {
@@ -37,6 +42,22 @@ public class Graph {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public List<Post> getPostsTotal() {
+        return postsTotal;
+    }
+
+    public void setPostsTotal(List<Post> postsTotal) {
+        this.postsTotal = postsTotal;
+    }
+
+    public List<Comment> getCommentsTotal() {
+        return commentsTotal;
+    }
+
+    public void setCommentsTotal(List<Comment> commentsTotal) {
+        this.commentsTotal = commentsTotal;
     }
 
     public List<Edge> getEdges() {
@@ -63,7 +84,7 @@ public class Graph {
 
     public List<Comment> getCommentsByPostID(String pID) {
         List<Comment> commts = new ArrayList<>();
-        for (Comment c : this.getComments()) {
+        for (Comment c : this.getCommentsTotal()) {
             if (c.getPostID().equals(pID)) {
                 commts.add(c);
             }
@@ -84,6 +105,12 @@ public class Graph {
         Collections.reverse(this.getPosts());
     }
 
+    public void removeFromList(List<Post> posts){
+        for (Post p :posts){
+            this.getPosts().remove(p);
+        }
+    }
+    
     public List<Post> getPostsByDate(Date d) {
         List<Post> postsDay = new ArrayList<>();
         for (Post p : this.getPosts()) {
@@ -91,6 +118,7 @@ public class Graph {
                 postsDay.add(p);
             }
         }
+        this.removeFromList(postsDay);
         return postsDay;
     }
 
@@ -103,21 +131,45 @@ public class Graph {
         return l1;
     }
 
-    public void timeLineMovingWindow() {
-        int iterator = 0;
-        Post head = this.getPosts().remove(iterator);
+    public void get30days() throws ParseException {
+        Post head = this.getPosts().remove(0);
         Date postDate = head.getPostData();
+        Date dateInit = postDate;
+        Date dateFinal = this.increseDate(postDate, 30);
         List<Post> postsTotal = new ArrayList<>();
         postsTotal.add(head);
         for (int i = 0; i < 30; i++) {
             List<Post> p = getPostsByDate(postDate);
-            postDate = increseDate(postDate);
+            postsTotal = this.concatLists(postsTotal, p);
+            postDate = increseDate(postDate, 1);
         }
 
+        this.getCommentsByDateBetween(dateInit, dateFinal);
+        this.setPostsTotal(postsTotal);
+
+        System.out.println(dateInit);
+        System.out.println(dateFinal);
+        
+    }
+
+    public void removeComments(List<Comment> comments){
+        for (Comment c : comments){
+            this.getComments().remove(c);
+        }
+    }
+    
+    public void getCommentsByDateBetween(Date dateInit, Date dateFinal) {
+        for (Comment c : this.getComments()) {
+            if (c.getCommentData().after(dateInit) && c.getCommentData().before(dateFinal)) {
+                this.commentsTotal.add(c);
+            }
+        }
+        this.removeComments(this.getCommentsTotal());
     }
 
     public void creatingEdges() {
-        for (Post p : this.getPosts()) {
+        for (Post p : this.getPostsTotal()) {
+
             List<Comment> cmts = this.getCommentsByPostID(p.getId());
 
             if (!cmts.isEmpty()) {
@@ -144,12 +196,12 @@ public class Graph {
         }
     }
 
-    public void graphToCSV() throws FileNotFoundException {
+    public void graphToCSV(String fileName) throws FileNotFoundException {
 
         System.out.println("starting " + this.getCommunityName() + " to csv");
 
-        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + this.getCommunityName() + "-graph.csv"));
-        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "-graph.csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
@@ -164,9 +216,22 @@ public class Graph {
         pw.close();
     }
 
-    private Date increseDate(Date postDate) throws ParseException {
+    private Date increseDate(Date postDate, int valor) throws ParseException {
+        //GAMBIS FEIA!!
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        return df.parse(LocalDate.parse(postDate.toString()).plusDays(1).toString());
+
+        int dia = postDate.getDate();
+        int mes = postDate.getMonth();
+        String dateString = null;
+        if (dia < 10 && mes < 10) {
+            dateString = (postDate.getYear() + 1900) + "-0" + (postDate.getMonth() + 1) + "-0" + postDate.getDate();
+        } else if (dia < 10) {
+            dateString = (postDate.getYear() + 1900) + "-" + (postDate.getMonth() + 1) + "-0" + postDate.getDate();
+        } else if (mes < 10) {
+            dateString = (postDate.getYear() + 1900) + "-0" + (postDate.getMonth() + 1) + "-" + postDate.getDate();
+        }
+
+        return df.parse(LocalDate.parse(dateString).plusDays(valor).toString());
     }
 
 }
