@@ -146,10 +146,6 @@ public class Graph {
 
         this.getCommentsByDateBetween(dateInit, dateFinal);
         this.setPostsTotal(postsTotal);
-
-        System.out.println(dateInit);
-        System.out.println(dateFinal);
-        
     }
 
     public void removeComments(List<Comment> comments){
@@ -200,8 +196,8 @@ public class Graph {
 
         System.out.println("starting " + this.getCommunityName() + " to csv");
 
-        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
-        //PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 

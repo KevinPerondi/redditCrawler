@@ -14,8 +14,8 @@ public class BuildGraph {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
 
-        //String filePath = "/home/suporte/Downloads/Reddit-Output-all/";
-        String filePath = "/home/todos/alunos/cm/a1552287/Downloads/Reddit-Output-all/";
+        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
+        //String filePath = "/home/todos/alunos/cm/a1552287/Downloads/Reddit-Output-all/";
         //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
         String[] communityNames = {"csharp"};
 
@@ -28,7 +28,7 @@ public class BuildGraph {
 
         for (String communityName : communityNames) {
 
-            String pathPost = filePath + communityName + "-posts.csv";
+            String pathPost = filePath + communityName + "-submissions.csv";
             String pathComment = filePath + communityName + "-comments.csv";
             postScan = new Scanner(new File(pathPost));
             commentScan = new Scanner(new File(pathComment));
@@ -44,20 +44,28 @@ public class BuildGraph {
                 line = postScan.nextLine();
                 if (skipFirstLine) {
                     skipFirstLine = false;
+                } else if (line.isEmpty()) {
+                    continue;
                 } else {
                     //post atributos
-                    //0-Id 1-Author 2-Date 3-IsArchived 4-IsLocked 5-IsNsfw 6-IsSelfPost 7-SelfText
-                    String[] lineSplit = line.split(",");
-                    if ((!lineSplit[1].equals("[deleted]")) && (!lineSplit[1].equals("AutoModerator"))) {
-                        try {
-                            Date d = df.parse(lineSplit[2]);
-                            Post novoPost = new Post(lineSplit[1], lineSplit[0], d);
-                            posts.add(novoPost);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                    //0-Id 1-Author 2-Date 3-IsLocked 4-IsSelfPost 5-Score 6-SelfText
+                    try {
+                        String[] lineSplit = line.split(",");
+                        if (lineSplit[0].length() == 6){                        
+                            if ((!lineSplit[1].equals("[deleted]")) && (!lineSplit[1].equals("AutoModerator"))) {
+                                try {
+                                    Date d = df.parse(lineSplit[2]);
+                                    Post novoPost = new Post(lineSplit[1], lineSplit[0], d);
+                                    posts.add(novoPost);
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            } else {
+                                deletedPostsID.add(lineSplit[0]);
+                            }
                         }
-                    } else {
-                        deletedPostsID.add(lineSplit[0]);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                     }
                 }
             }
@@ -67,9 +75,11 @@ public class BuildGraph {
                 line = commentScan.nextLine();
                 if (skipFirstLine) {
                     skipFirstLine = false;
+                } else if (line.isEmpty()) {
+                    continue;
                 } else {
                     //comments atributos
-                    //0-Id 1-PostId 2-ParentId 3-IsAnswer 4-Author 5-Date 6-IsArchived 7-IsControversial 8-Score 9-Content
+                    //0-Id 1-PostId 2-ParentId 3-IsAnswer 4-Author 5-Date 6-Score 7-Content
                     String[] lineSplit = line.trim().split(",");
 
                     if (lineSplit.length >= 10 && (!deletedPostsID.contains(lineSplit[1])) && (!lineSplit[4].equals("[deleted]"))
@@ -97,10 +107,12 @@ public class BuildGraph {
             skipFirstLine = true;
             System.out.println(posts.get(0).getPostData());
             System.out.println("Creating Graph for {" + communityName + "}");
+            System.out.println("Post size: "+posts.size());
+            System.out.println("Comments size: "+comments.size());
             Graph graph = new Graph(posts, comments, communityName);
             graph.get30days();
             graph.creatingEdges();
-            
+
             //graph.printEdges();
             graph.graphToCSV("csharp-30days");
         }
