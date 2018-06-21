@@ -3,10 +3,7 @@ package com.mycompany.graph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -106,26 +103,26 @@ public class Graph {
         Collections.reverse(this.getPosts());
     }
 
-    public void removeFromList(List<Post> posts) {
-        for (Post p : posts) {
-            this.getPosts().remove(p);
+    public void removeFromList() {
+        for (Post p : this.getPostsTotal()) {
+            if (this.getPosts().contains(p)) {
+                this.getPosts().remove(p);
+            }
         }
     }
 
-    public void printPostsDate(){
-        for (Post p : this.getPosts()){
+    public void printPostsDate() {
+        for (Post p : this.getPosts()) {
             System.out.println(p.getPostData());
         }
     }
-    
-    public List<Post> getPostsByDate(Date d) {
-        List<Post> postsDay = new ArrayList<>();
+
+    public void getPostsByDate(Date d) {
         for (Post p : this.getPosts()) {
             if (p.getPostData().compareTo(d) == 0) {
-                postsDay.add(p);
+                this.postsTotal.add(p);
             }
         }
-        return postsDay;
     }
 
     public List<Post> concatLists(List<Post> l1, List<Post> l2) {
@@ -139,17 +136,15 @@ public class Graph {
 
     public void get30days() throws ParseException {
         Post head = this.getPosts().remove(0);
+        this.postsTotal.add(head);
         Date postDate = head.getPostData();
         Date dateInit = postDate;
         Date dateFinal = this.increseDate(postDate, 30);
         for (int i = 0; i < 30; i++) {
-            List<Post> p = getPostsByDate(postDate);
-            System.out.println("psize: "+p.size());
-            this.setPostsTotal(this.concatLists(this.getPostsTotal(), p));
-            System.out.println("pTotalsize: "+this.postsTotal.size());
+            this.getPostsByDate(postDate);
             postDate = increseDate(postDate, 1);
         }
-
+        this.removeFromList();
         this.getCommentsByDateBetween(dateInit, dateFinal);
     }
 
@@ -168,11 +163,13 @@ public class Graph {
         this.removeComments(this.getCommentsTotal());
     }
 
+    public void removeAllEdgesFromList(){
+        this.edges.clear();
+    }
+    
     public void creatingEdges() {
         for (Post p : this.getPostsTotal()) {
-
             List<Comment> cmts = this.getCommentsByPostID(p.getId());
-
             if (!cmts.isEmpty()) {
                 for (Comment c : cmts) {
                     if (!c.isIsAnswer()) {
@@ -197,12 +194,23 @@ public class Graph {
         }
     }
 
+    public void procedure() throws ParseException, FileNotFoundException{
+        int count = 30;
+        for (int i = 0; i < 12; i++) {
+            this.get30days();
+            this.creatingEdges();
+            this.graphToCSV(this.getCommunityName() + count + "days");
+            this.removeAllEdgesFromList();
+            count += 30;
+        }
+    }
+    
     public void graphToCSV(String fileName) throws FileNotFoundException {
 
         System.out.println("starting " + this.getCommunityName() + " to csv");
 
-        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
-        //PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
@@ -223,27 +231,6 @@ public class Graph {
         c.add(Calendar.DATE, valor);
         Date dt = c.getTime();
         return dt;
-        //GAMBIS FEIA!!
-        /*DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
-        int dia = postDate.getDate();
-        int mes = postDate.getMonth();
-        String dateString = null;
-        if (dia < 10 && mes < 10) {
-            dateString = (postDate.getYear() + 1900) + "-0" + (postDate.getMonth() + 1) + "-0" + postDate.getDate();
-        } else if (dia < 10) {
-            dateString = (postDate.getYear() + 1900) + "-" + (postDate.getMonth() + 1) + "-0" + postDate.getDate();
-        } else if (mes < 10) {
-            dateString = (postDate.getYear() + 1900) + "-0" + (postDate.getMonth() + 1) + "-" + postDate.getDate();
-        }
-
-        String x = LocalDate.parse(dateString).plusDays(valor).toString();
-
-        Date novaData = df.parse(dateString);
-
-        System.out.println("-" + novaData);
-
-        return novaData;*/
     }
 
 }

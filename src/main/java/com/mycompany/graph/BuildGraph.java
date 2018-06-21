@@ -14,8 +14,8 @@ public class BuildGraph {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
 
-        //String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
-        String filePath = "/home/todos/alunos/cm/a1552287/Downloads/DataSet-pushshift-full/";
+        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
+        //String filePath = "/home/todos/alunos/cm/a1552287/Downloads/DataSet-pushshift-full/";
         //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
         String[] communityNames = {"csharp"};
 
@@ -51,7 +51,7 @@ public class BuildGraph {
                     //0-Id 1-Author 2-Date 3-IsLocked 4-IsSelfPost 5-Score 6-SelfText
                     try {
                         String[] lineSplit = line.split(",");
-                        if (lineSplit[0].length() == 6){                        
+                        if (lineSplit[0].length() == 6) {
                             if ((!lineSplit[1].equals("[deleted]")) && (!lineSplit[1].equals("AutoModerator"))) {
                                 try {
                                     Date d = df.parse(lineSplit[2]);
@@ -107,15 +107,24 @@ public class BuildGraph {
             skipFirstLine = true;
             System.out.println(posts.get(0).getPostData());
             System.out.println("Creating Graph for {" + communityName + "}");
-            System.out.println("Post size: "+posts.size());
-            System.out.println("Comments size: "+comments.size());
+            System.out.println("Post size: " + posts.size());
+            System.out.println("Comments size: " + comments.size());
+
             Graph graph = new Graph(posts, comments, communityName);
-            graph.printPostsDate();
+
+            graph.procedure();
+            
+            /*graph.get30days();
+            graph.creatingEdges();
+            graph.graphToCSV("csharp-30days");
+            graph.removeAllEdgesFromList();
+
             graph.get30days();
             graph.creatingEdges();
-
-            //graph.printEdges();
-            graph.graphToCSV("csharp-30days");
+            graph.graphToCSV("csharp-60days");
+            graph.removeAllEdgesFromList();*/
+            
+            
         }
 
     }
