@@ -14,8 +14,8 @@ public class BuildGraph {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
 
-        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
-        //String filePath = "/home/todos/alunos/cm/a1552287/Downloads/Reddit-Output-all/";
+        //String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
+        String filePath = "/home/todos/alunos/cm/a1552287/Downloads/DataSet-pushshift-full/";
         //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
         String[] communityNames = {"csharp"};
 
@@ -110,6 +110,7 @@ public class BuildGraph {
             System.out.println("Post size: "+posts.size());
             System.out.println("Comments size: "+comments.size());
             Graph graph = new Graph(posts, comments, communityName);
+            graph.printPostsDate();
             graph.get30days();
             graph.creatingEdges();
 

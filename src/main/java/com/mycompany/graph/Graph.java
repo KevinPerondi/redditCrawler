@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -105,20 +106,25 @@ public class Graph {
         Collections.reverse(this.getPosts());
     }
 
-    public void removeFromList(List<Post> posts){
-        for (Post p :posts){
+    public void removeFromList(List<Post> posts) {
+        for (Post p : posts) {
             this.getPosts().remove(p);
+        }
+    }
+
+    public void printPostsDate(){
+        for (Post p : this.getPosts()){
+            System.out.println(p.getPostData());
         }
     }
     
     public List<Post> getPostsByDate(Date d) {
         List<Post> postsDay = new ArrayList<>();
         for (Post p : this.getPosts()) {
-            if (p.getPostData().equals(d)) {
+            if (p.getPostData().compareTo(d) == 0) {
                 postsDay.add(p);
             }
         }
-        this.removeFromList(postsDay);
         return postsDay;
     }
 
@@ -136,24 +142,23 @@ public class Graph {
         Date postDate = head.getPostData();
         Date dateInit = postDate;
         Date dateFinal = this.increseDate(postDate, 30);
-        List<Post> postsTotal = new ArrayList<>();
-        postsTotal.add(head);
         for (int i = 0; i < 30; i++) {
             List<Post> p = getPostsByDate(postDate);
-            postsTotal = this.concatLists(postsTotal, p);
+            System.out.println("psize: "+p.size());
+            this.setPostsTotal(this.concatLists(this.getPostsTotal(), p));
+            System.out.println("pTotalsize: "+this.postsTotal.size());
             postDate = increseDate(postDate, 1);
         }
 
         this.getCommentsByDateBetween(dateInit, dateFinal);
-        this.setPostsTotal(postsTotal);
     }
 
-    public void removeComments(List<Comment> comments){
-        for (Comment c : comments){
+    public void removeComments(List<Comment> comments) {
+        for (Comment c : comments) {
             this.getComments().remove(c);
         }
     }
-    
+
     public void getCommentsByDateBetween(Date dateInit, Date dateFinal) {
         for (Comment c : this.getComments()) {
             if (c.getCommentData().after(dateInit) && c.getCommentData().before(dateFinal)) {
@@ -196,8 +201,8 @@ public class Graph {
 
         System.out.println("starting " + this.getCommunityName() + " to csv");
 
-        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
-        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
@@ -213,8 +218,13 @@ public class Graph {
     }
 
     private Date increseDate(Date postDate, int valor) throws ParseException {
+        Calendar c = Calendar.getInstance();
+        c.setTime(postDate);
+        c.add(Calendar.DATE, valor);
+        Date dt = c.getTime();
+        return dt;
         //GAMBIS FEIA!!
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        /*DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         int dia = postDate.getDate();
         int mes = postDate.getMonth();
@@ -227,7 +237,13 @@ public class Graph {
             dateString = (postDate.getYear() + 1900) + "-0" + (postDate.getMonth() + 1) + "-" + postDate.getDate();
         }
 
-        return df.parse(LocalDate.parse(dateString).plusDays(valor).toString());
+        String x = LocalDate.parse(dateString).plusDays(valor).toString();
+
+        Date novaData = df.parse(dateString);
+
+        System.out.println("-" + novaData);
+
+        return novaData;*/
     }
 
 }

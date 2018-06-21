@@ -27,9 +27,14 @@ public class teste_class {
         System.out.println(d);
 
         Date beet = df.parse("2018-03-23");
+        Date beet2 = df.parse("2018-02-28");
         
         Date d2 = df.parse(LocalDate.parse(date).plusDays(30).toString());
         System.out.println(d2);
+        
+        System.out.println("");
+        System.out.println(d.compareTo(beet));
+        System.out.println(d.compareTo(beet2));
         
         
         System.out.println(beet);

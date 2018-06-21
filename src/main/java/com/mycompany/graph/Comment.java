@@ -68,4 +68,8 @@ public class Comment {
         this.isAnswer = isAnswer;
     }
 
+    public void printComment(){
+        System.out.println(this.getCommentID()+" "+this.getPostID()+" "+this.getParentID()+" "+this.getAuthor()+" "+this.getCommentData());
+    }
+    
 }

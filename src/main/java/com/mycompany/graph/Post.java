@@ -36,4 +36,8 @@ public class Post {
     public void setPostData(Date postData) {
         this.postDate = postData;
     }
+    
+    public void printPost(){
+        System.out.println(this.getId()+" "+this.getAuthor()+" "+this.getPostData());
+    }
 }
