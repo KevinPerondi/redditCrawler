@@ -14,7 +14,9 @@ public class BuildGraph {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
 
-        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
+    
+    //        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
+        String filePath = "/home/kevin/Downloads/DataSet-pushshift-full/";
         //String filePath = "/home/todos/alunos/cm/a1552287/Downloads/DataSet-pushshift-full/";
         //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
         String[] communityNames = {"csharp"};
