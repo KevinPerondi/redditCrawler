@@ -15,11 +15,12 @@ public class BuildGraph {
     public static void main(String[] args) throws FileNotFoundException, ParseException {
 
     
-    //        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
-        String filePath = "/home/kevin/Downloads/DataSet-pushshift-full/";
+        String filePath = "/home/suporte/Downloads/DataSet-pushshift-full/";
+        String dirPath = "/home/suporte/Downloads/";
+        //String filePath = "/home/kevin/Downloads/DataSet-pushshift-full/";
         //String filePath = "/home/todos/alunos/cm/a1552287/Downloads/DataSet-pushshift-full/";
-        //String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
-        String[] communityNames = {"csharp"};
+        String[] communityNames = {"cpp", "csharp", "golang", "java", "julia", "kotlin", "php", "python", "ruby", "scala"};
+        //String[] communityNames = {"java"};
 
         Scanner postScan;
         Scanner commentScan;
@@ -106,6 +107,9 @@ public class BuildGraph {
 
                 }
             }
+            
+            new File(dirPath+communityName).mkdir();
+            
             skipFirstLine = true;
             System.out.println(posts.get(0).getPostData());
             System.out.println("Creating Graph for {" + communityName + "}");

@@ -142,19 +142,19 @@ public class Graph {
         return false;
     }
 
-    public void increseEdgeWeight(String source, String target){
-        for (Edge e : this.getEdges()){
-            if (e.getSource().equals(source) && e.getTarget().equals(target)){
-                e.setWeight(e.getWeight()+1);
+    public void increseEdgeWeight(String source, String target) {
+        for (Edge e : this.getEdges()) {
+            if (e.getSource().equals(source) && e.getTarget().equals(target)) {
+                e.setWeight(e.getWeight() + 1);
             }
         }
     }
-    
+
     public void addEdge(String source, String target) {
-        if (!this.containsEdge(source, target)){
-            Edge e = new Edge(source, target,this.start,this.end);
+        if (!this.containsEdge(source, target)) {
+            Edge e = new Edge(source, target, this.start, this.end);
             this.edges.add(e);
-        }else{
+        } else {
             this.increseEdgeWeight(source, target);
         }
     }
@@ -298,9 +298,9 @@ public class Graph {
         int count = 30;
         for (int i = 0; i < 12; i++) {
             this.get30days();
-            this.nodesToCSV(this.getCommunityName() + count + "Nodes",i*30,(i+1)*30);
+            this.nodesToCSV(this.getCommunityName() + count + "Nodes", i * 30, (i + 1) * 30);
             this.creatingEdges();
-            this.relationsToCSV(this.getCommunityName() + count + "Relations",i*30,(i+1)*30);
+            this.relationsToCSV(this.getCommunityName() + count + "Relations", i * 30, (i + 1) * 30);
             //this.removeAllEdgesFromList();
             count += 30;
             this.start += 30;
@@ -308,19 +308,20 @@ public class Graph {
         }
     }
 
-    public void relationsToCSV(String fileName,int start, int end) throws FileNotFoundException {
+    public void relationsToCSV(String fileName, int start, int end) throws FileNotFoundException {
 
         System.out.println("starting " + fileName + " to csv");
 
-        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + "-graph.csv"));
-        PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + fileName + ".csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("Source;Target;Weight;Type;Start;End\n");
 
         for (Edge e : this.getEdges()) {
-            sb.append(e.getSource()+";"+e.getTarget()+";"+e.getWeight()+";\"directed\";"+e.getStart()+";"+e.getEnd()+"\n");
+            sb.append(e.getSource() + ";" + e.getTarget() + ";" + e.getWeight() + ";\"directed\";" + e.getStart() + ";" + e.getEnd() + "\n");
         }
         pw.write(sb.toString());
         pw.close();
@@ -334,16 +335,19 @@ public class Graph {
         return dt;
     }
 
-    private void nodesToCSV(String fileName,int start, int end) throws FileNotFoundException {
+    private void nodesToCSV(String fileName, int start, int end) throws FileNotFoundException {
         System.out.println("starting " + fileName + " to csv");
-        PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + fileName + ".csv"));
+
+        //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + fileName + ".csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("Id;Label;Start;End\n");
 
         for (Node node : this.getNodeLists()) {
-            sb.append(node.getName() + ";" + node.getName() +";"+node.getStart()+";"+node.getEnd()+"\n");
+            sb.append(node.getName() + ";" + node.getName() + ";" + node.getStart() + ";" + node.getEnd() + "\n");
         }
 
         pw.write(sb.toString());
