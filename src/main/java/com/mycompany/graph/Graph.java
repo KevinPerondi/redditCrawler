@@ -34,7 +34,7 @@ public class Graph {
         this.commentsTotal = new ArrayList<>();
         this.nodeLists = new ArrayList<>();
         this.start = 0;
-        this.end = 30;
+        this.end = 360;
         this.revertPostsList();
         this.getStartDateFromPosts();
     }
@@ -135,7 +135,8 @@ public class Graph {
 
     public boolean containsEdge(String source, String target) {
         for (Edge e : this.getEdges()) {
-            if (e.getSource().equals(source) && e.getTarget().equals(target)) {
+            if (e.getSource().equals(source) && e.getTarget().equals(target)
+                    && e.getStart() == this.start && e.getEnd() == this.end) {
                 return true;
             }
         }
@@ -169,8 +170,8 @@ public class Graph {
         return commts;
     }
 
-    public String getAuthorNameByParentID(List<Comment> cmts, String parentID) {
-        for (Comment c : cmts) {
+    public String getAuthorNameByParentID(String parentID) {
+        for (Comment c : this.getCommentsTotal()) {
             if (c.getCommentID().equals(parentID)) {
                 return c.getAuthor();
             }
@@ -269,8 +270,31 @@ public class Graph {
         this.edges.clear();
     }
 
-    public void creatingEdges() {
+    public String getAuthorByPostID(String id) {
         for (Post p : this.getPostsTotal()) {
+            if (p.getId().equals(id)) {
+                return p.getAuthor();
+            }
+        }
+        return "";
+    }
+
+    public void creatingEdges() {
+        for (Comment c : this.getCommentsTotal()) {
+            if (!c.isIsAnswer()) {
+                String postAuthor = this.getAuthorByPostID(c.getPostID());
+                if (!postAuthor.isEmpty()) {
+                    this.addEdge(c.getAuthor(), postAuthor);
+                }
+            } else {
+                String targetName = this.getAuthorNameByParentID(c.getParentID());
+                if (!targetName.isEmpty()) {
+                    this.addEdge(c.getAuthor(), targetName);
+                }
+            }
+        }
+        /*for (Post p : this.getPostsTotal()) {
+            this.getCommentsTotal();
             List<Comment> cmts = this.getCommentsByPostID(p.getId());
             if (!cmts.isEmpty()) {
                 for (Comment c : cmts) {
@@ -285,7 +309,7 @@ public class Graph {
                 }
             }
 
-        }
+        }*/
     }
 
     public void printEdges() {
@@ -298,13 +322,13 @@ public class Graph {
         int count = 30;
         for (int i = 0; i < 12; i++) {
             this.get30days();
-            this.nodesToCSV(this.getCommunityName() + count + "Nodes", i * 30, (i + 1) * 30);
+            this.nodesToCSV(this.getCommunityName() + count + "Nodes", i * 30,360);
             this.creatingEdges();
-            this.relationsToCSV(this.getCommunityName() + count + "Relations", i * 30, (i + 1) * 30);
+            this.relationsToCSV(this.getCommunityName() + count + "Relations", i * 30, 360);
             //this.removeAllEdgesFromList();
             count += 30;
             this.start += 30;
-            this.end += 30;
+            //this.end += 30;
         }
     }
 
@@ -313,8 +337,8 @@ public class Graph {
         System.out.println("starting " + fileName + " to csv");
 
         //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + ".csv"));
-        //PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + fileName + ".csv"));
-        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
@@ -339,8 +363,8 @@ public class Graph {
         System.out.println("starting " + fileName + " to csv");
 
         //PrintWriter pw = new PrintWriter(new File("/home/todos/alunos/cm/a1552287/Downloads/" + fileName + ".csv"));
-        //PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + fileName + ".csv"));
-        PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
+        PrintWriter pw = new PrintWriter(new File("/home/kevin/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
+        //PrintWriter pw = new PrintWriter(new File("/home/suporte/Downloads/" + this.getCommunityName() + "/" + fileName + ".csv"));
 
         StringBuilder sb = new StringBuilder();
 
